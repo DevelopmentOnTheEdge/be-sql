@@ -1442,6 +1442,7 @@ void InPredicatePart() #InPredicate : {}
 	  (
 	    BeListPlaceHolder() |
 	    BeParameterTag() |
+	    BeSessionTag() |
 	    BeDictionary() |
 	    LOOKAHEAD((<LEFT_PAREN>)+ [BeIfStart()] <SELECT>) NestedQuery() |
 	    InValueList()

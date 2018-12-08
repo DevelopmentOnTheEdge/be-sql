@@ -40,6 +40,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 public class ContextApplier
 {
@@ -296,52 +297,47 @@ public class ContextApplier
                     value = "";
                 }
             }
-
             child.replaceWith(applySessionParameters(child, value));
         }
         else
         {
+            if (value == null)
+            {
+                throw new IllegalArgumentException("Session multiple variable value can not be null: " + name);
+            }
+            SimpleNode[] nodes = getSessionValues(value)
+                    .map(val -> applySessionParameters(child, val))
+                    .toArray(SimpleNode[]::new);
+
             if (child.jjtGetParent() instanceof AstInValueList)
             {
-                SimpleNode[] objects;
-
-                if (value == null)
-                {
-                    throw new IllegalArgumentException("Session variable value can not be null: " + name);
-                }
-                else if (value instanceof List)
-                {
-                    List list = (List) value;
-                    objects = new SimpleNode[list.size()];
-                    for (int i = 0; i < list.size(); i++)
-                    {
-                        objects[i] = applySessionParameters(child, list.get(i));
-                    }
-                }
-                else
-                {
-                    objects = (Arrays.stream((Object[]) value))
-                            .map(val -> applySessionParameters(child, val))
-                            .toArray(SimpleNode[]::new);
-                }
-
-                child.replaceWith(objects);
-                return;
+                child.replaceWith(nodes);
             }
-            if (!(child.jjtGetParent() instanceof AstInPredicate))
-                throw new IllegalArgumentException("Parameter Multiple can only be put inside InPredicate");
-
-            AstInValueList list = new AstInValueList(SqlParserTreeConstants.JJTINVALUELIST);
-            List<String> values = context.getListParameter(child.getName());
-
-            if (values != null)
+            else if (child.jjtGetParent() instanceof AstInPredicate)
             {
-                for (String val : values)
-                {
-                    list.addChild(applySessionParameters(child, val));
-                }
+                AstInValueList list = new AstInValueList(SqlParserTreeConstants.JJTINVALUELIST);
+                list.addChilds(nodes);
+                child.replaceWith(list);
             }
-            list.inheritFrom(child);
+            else
+            {
+                throw new IllegalArgumentException("Parameter multiple can only be put inside " +
+                        "InPredicate or AstInValueList");
+            }
+        }
+    }
+
+    private Stream<Object> getSessionValues(Object value)
+    {
+        if (value instanceof List)
+        {
+            @SuppressWarnings("unchecked")
+            List<Object> values = (List<Object>) value;
+            return values.stream();
+        }
+        else
+        {
+            return Arrays.stream((Object[]) value);
         }
     }
 

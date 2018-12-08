@@ -104,6 +104,14 @@ public class SimpleNode implements Node, Cloneable
         }
     }
 
+    public void addChilds(SimpleNode[] nodes)
+    {
+        for (SimpleNode node : nodes)
+        {
+            addChild(node);
+        }
+    }
+
     private void updateSpecialSuffix(SimpleNode prev, SimpleNode next)
     {
         if (prev == null || next == null)

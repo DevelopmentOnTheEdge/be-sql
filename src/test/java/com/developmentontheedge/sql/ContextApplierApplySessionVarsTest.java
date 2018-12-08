@@ -14,6 +14,32 @@ import static org.junit.Assert.assertEquals;
 public class ContextApplierApplySessionVarsTest
 {
     @Test
+    public void simple()
+    {
+        AstStart start = SqlQuery.parse("SELECT * FROM table WHERE name = <session:user/>");
+
+        ContextApplier contextApplier = new ContextApplier(new BasicQueryContext.Builder()
+                .sessionVar("user", "Test")
+                .build());
+        contextApplier.applyContext(start);
+
+        assertEquals("SELECT * FROM table WHERE name = 'Test'", start.getQuery().toString());
+    }
+
+    @Test
+    public void testInValue()
+    {
+        AstStart start = SqlQuery.parse("SELECT * FROM table WHERE name IN <session:projects multiple=\"true\"/>");
+
+        ContextApplier contextApplier = new ContextApplier(new BasicQueryContext.Builder()
+                .sessionVar("projects", Arrays.asList("Demo", "Test project"))
+                .build());
+        contextApplier.applyContext(start);
+
+        assertEquals("SELECT * FROM table WHERE name IN ('Demo', 'Test project')", start.getQuery().toString());
+    }
+
+    @Test
     public void listString()
     {
         AstStart start = SqlQuery.parse("SELECT * FROM table WHERE name IN (<session:projects multiple=\"true\"/>)");
