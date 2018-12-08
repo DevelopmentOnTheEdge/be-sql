@@ -32,6 +32,7 @@ import com.developmentontheedge.sql.model.SqlQuery;
 import one.util.streamex.StreamEx;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,29 +60,6 @@ public class ContextApplier
     public StreamEx<String> subQueryKeys()
     {
         return StreamEx.ofKeys(context.getSubQueries());
-    }
-
-    public Map<String, String> getSubQueryPropertyMap(String key, Function<String, String> varResolver)
-    {
-        Map<String, String> propertyMap = new HashMap<>();
-
-        AstBeSqlSubQuery subQuery = context.getSubQueries().get(key);
-        if (subQuery == null)
-            return propertyMap;
-
-        String keyStr = subQuery.getFilterKeys();
-        String valPropStr = subQuery.getFilterValProperties();
-        if (keyStr != null && valPropStr != null)
-        {
-            String[] keys = keyStr.split(",");
-            String[] valProps = valPropStr.split(",");
-
-            for (int i = 0; i < keys.length; i++)
-            {
-                propertyMap.put(keys[i], varResolver.apply(valProps[i]));
-            }
-        }
-        return propertyMap;
     }
 
     public AstBeSqlSubQuery getSubQuery(String key, Function<String, String> varResolver)
@@ -276,14 +254,14 @@ public class ContextApplier
             {
                 String[] keys = keyStr.split(",");
                 String[] valProps = valPropStr.split(",");
-                Map<ColumnRef, String> conditions = new HashMap<>();
+                Map<ColumnRef, List<Object>> conditions = new HashMap<>();
                 for (int i = 0; i < keys.length; i++)
                 {
                     //ColumnRef.resolve(subQuery.getQuery(), keys[i])
-                    conditions.put(new ColumnRef(null, keys[i]), "<var:" + valProps[i] + "/>");
+                    conditions.put(new ColumnRef(null, keys[i]), Collections.singletonList("<var:" + valProps[i] + "/>"));
                     //subQuery.addParameter(keys[i], valProps[i]);
                 }
-                //new FilterApplier().addFilter(subQuery.getQuery(), conditions);
+                new FilterApplier().addFilter(subQuery.getQuery(), conditions);
             }
         }
         //AstBeSqlVar beSqlVar = subQuery.getAstBeSqlVar();
@@ -440,14 +418,6 @@ public class ContextApplier
         if (multiple == null)
         {
             value = context.getParameter(paramNode.getName());
-
-            Map<String, String> propertyMap = getSubQueryPropertyMap(key, varResolver);
-            if (value == null && propertyMap.containsKey(paramNode.getName()))
-            {
-                value = propertyMap.get(paramNode.getName());
-
-            }
-
             replacement = applyParameters(paramNode, value, tableRefAddend);
         }
         else

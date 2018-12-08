@@ -6,7 +6,6 @@ import com.developmentontheedge.sql.format.ContextApplier;
 import com.developmentontheedge.sql.model.AstBeSqlSubQuery;
 import com.developmentontheedge.sql.model.AstStart;
 import com.developmentontheedge.sql.model.SqlQuery;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -55,8 +54,7 @@ public class SubQueryTest
                 "      '<sql>SubQuery#1</sql>' AS \"testtUserValues\"\n" +
                 "    FROM\n" +
                 "      testtable t ORDER BY 2 LIMIT 2147483647";
-        AstStart start = SqlQuery.parse(sql);
-        //assertEquals(sql, start.format());
+        SqlQuery.parse(sql);
     }
 
     @Test
@@ -98,10 +96,8 @@ public class SubQueryTest
     }
 
     @Test
-    @Ignore
     public void testApplyWithVarsExecDelayedAddFilter()
     {
-        //TODO us.ID vs ID in be3 (us from entity)
         AstStart start = SqlQuery.parse(
                 "SELECT '<sql exec=\"delayed\" filterKey=\"us.ID\" filterValProperty=\"___usID\" limit=\"1\" " +
                         "entity=\"utilitySuppliers\" queryName=\"*** Selection view ***\" outColumns=\"Name\"></sql>' AS \"Услуга\",\n" +
@@ -123,9 +119,7 @@ public class SubQueryTest
 
         assertEquals("SELECT us.utilityType AS \"Name\" " +
                 "FROM utilitySuppliers us WHERE us.ID = 5 LIMIT 1", subQuery.getQuery().format());
-
     }
-
 
     @Test
     public void testApplyWithVars()
@@ -172,7 +166,7 @@ public class SubQueryTest
         ContextApplier contextApplier = new ContextApplier(new BasicQueryContext.Builder().build());
         contextApplier.applyContext(start);
         String key = contextApplier.subQueryKeys().findFirst().get();
-        Map<String, String> vars = new HashMap<String, String>();
+        Map<String, String> vars = new HashMap<>();
         vars.put("reference", "ref");
         vars.put("name", "name");
         AstBeSqlSubQuery subQuery = contextApplier.getSubQuery(key, vars::get);

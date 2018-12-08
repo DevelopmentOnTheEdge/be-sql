@@ -1,15 +1,12 @@
 package com.developmentontheedge.sql;
 
 import com.developmentontheedge.sql.model.SqlQuery;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-
 public class ReplacementParametersTest
 {
-
     @Test
     public void testSimple()
     {
@@ -31,19 +28,10 @@ public class ReplacementParametersTest
         assertEquals(query, SqlQuery.parse(query).format());
     }
 
-    @Ignore
-    @Test(expected = IllegalArgumentException.class)
-    public void testErrorInSelectList()
-    {
-        String query = "SELECT ? FROM persons";
-        assertEquals(query, SqlQuery.parse(query).format());
-    }
-
     @Test(expected = IllegalArgumentException.class)
     public void testReplacementParametersErrorInFrom()
     {
         String query = "SELECT name FROM ?";
         assertEquals(query, SqlQuery.parse(query).format());
     }
-
 }
