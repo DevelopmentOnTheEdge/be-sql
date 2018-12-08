@@ -2,20 +2,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>be5-sql</artifactId>
+  <artifactId>be-sql</artifactId>
   <version>0.0.28-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>be5 sql</name>
-  <description>Parse SQL (select statement only) and builds its AST.
+  <description>Parse SQL and builds its AST.
     Then DBMS specific SQL select statement can be generated.
   </description>
-
-  <parent>
-    <groupId>com.developmentontheedge.be5</groupId>
-    <artifactId>be5</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
-  </parent>
 
   <dependencies>
 
