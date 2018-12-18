@@ -61,7 +61,7 @@ public abstract class AbstractParser implements Parser
     {
         if (squashed)
             return;
-        astStart.tree().filter(Squasheable.class::isInstance)
+        astStart.treeWithBeSql().filter(Squasheable.class::isInstance)
                 .remove(node -> node.jjtGetParent() instanceof AstBeNode)
                 .filter(node -> node.jjtGetNumChildren() == 1)
                 .forEach(node -> {

@@ -350,9 +350,19 @@ public class SimpleNode implements Node, Cloneable
         return StreamEx.of(children);
     }
 
+    public StreamEx<SimpleNode> treeWithBeSql()
+    {
+        return StreamEx.ofTree(this, node -> node.jjtGetNumChildren() > 0 ? node.children() : null);
+    }
+
     public StreamEx<SimpleNode> tree()
     {
-        return StreamEx.ofTree(this, node -> node.jjtGetNumChildren() == 0 ? null : node.children());
+        return StreamEx.ofTree(this, node -> (node.jjtGetNumChildren() > 0 && isNotAstBeSql(node)) ? node.children() : null);
+    }
+
+    private boolean isNotAstBeSql(SimpleNode node)
+    {
+        return node.getClass() != AstBeSqlSubQuery.class && node.getClass() != AstBeSql.class;
     }
 
     @Override
