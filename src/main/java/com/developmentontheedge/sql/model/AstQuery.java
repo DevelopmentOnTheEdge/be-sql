@@ -15,6 +15,11 @@ public class AstQuery extends SimpleNode
         addChild(select);
     }
 
+    public AstSelect getSelect()
+    {
+        return children().select(AstSelect.class).findFirst().orElse(null);
+    }
+
     @Override
     public AstQuery clone()
     {
