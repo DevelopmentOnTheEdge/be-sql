@@ -25,7 +25,7 @@ public class BasicQueryContext implements QueryContext
     @FunctionalInterface
     public interface QueryResolver
     {
-        public String resolve(String entityName, String queryName);
+        String resolve(String entityName, String queryName);
     }
 
     private BasicQueryContext(Map<String, List<Object>> parameters, Map<String, Object> sessionVariables, String userName,
@@ -81,9 +81,9 @@ public class BasicQueryContext implements QueryContext
     }
 
     @Override
-    public StreamEx<String> roles()
+    public List<String> roles()
     {
-        return StreamEx.of(roles);
+        return roles;
     }
 
     @Override

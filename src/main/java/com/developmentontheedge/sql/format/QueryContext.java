@@ -1,7 +1,6 @@
 package com.developmentontheedge.sql.format;
 
 import com.developmentontheedge.sql.model.AstBeSqlSubQuery;
-import one.util.streamex.StreamEx;
 
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,7 @@ public interface QueryContext
 
     Map<String, AstBeSqlSubQuery> getSubQueries();
 
-    StreamEx<String> roles();
+    List<String> roles();
 
     String getDictionaryValue(String tagName, String name, Map<String, String> parameters);
 }

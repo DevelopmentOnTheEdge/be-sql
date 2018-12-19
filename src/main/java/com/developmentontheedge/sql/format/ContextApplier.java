@@ -367,7 +367,7 @@ public class ContextApplier
         if (placeholderNode instanceof AstBeListPlaceHolder)
         {
             AstInValueList list = new AstInValueList(SqlParserTreeConstants.JJTINVALUELIST);
-            context.roles().map(AstStringConstant::new).forEach(list::addChild);
+            context.roles().stream().map(AstStringConstant::new).forEach(list::addChild);
             replacement = list;
         }
         else
