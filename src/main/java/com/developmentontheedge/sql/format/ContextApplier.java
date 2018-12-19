@@ -602,9 +602,10 @@ public class ContextApplier
         for (int k = 0; k < node.jjtGetNumChildren(); k++)
             tree.jjtAddChild((node.child(k)), i + k);
     }
-//
-//    public static boolean isNumeric(String value)
-//    {
-//        return value.matches( "[-+]?\\d*\\.?\\d+" );
-//    }
+
+    public QueryContext getContext()
+    {
+        return context;
+    }
+
 }

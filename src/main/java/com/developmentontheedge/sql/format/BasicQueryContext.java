@@ -10,11 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 public class BasicQueryContext implements QueryContext
 {
-    private final Map<String, List<String>> parameters;
+    private final Map<String, List<Object>> parameters;
     private final Map<String, Object> sessionVariables;
     private final String userName;
     private final List<String> roles;
@@ -27,7 +28,7 @@ public class BasicQueryContext implements QueryContext
         public String resolve(String entityName, String queryName);
     }
 
-    private BasicQueryContext(Map<String, List<String>> parameters, Map<String, Object> sessionVariables, String userName,
+    private BasicQueryContext(Map<String, List<Object>> parameters, Map<String, Object> sessionVariables, String userName,
                               List<String> roles, QueryResolver queryResolver)
     {
         this.parameters = parameters;
@@ -46,7 +47,8 @@ public class BasicQueryContext implements QueryContext
     @Override
     public List<String> getListParameter(String name)
     {
-        return parameters.get(name);
+        if (parameters.get(name) == null) return null;
+        return parameters.get(name).stream().map(x -> x + "").collect(Collectors.toList());
     }
 
     @Override
@@ -57,7 +59,13 @@ public class BasicQueryContext implements QueryContext
         if (parameters.get(name).size() != 1)
             throw new IllegalStateException(name + " contains more than one value");
         else
-            return parameters.get(name).get(0);
+            return parameters.get(name).get(0) + "";
+    }
+
+    @Override
+    public Map<String, List<Object>> getParameters()
+    {
+        return parameters;
     }
 
     @Override
@@ -92,7 +100,7 @@ public class BasicQueryContext implements QueryContext
 
     public static class Builder
     {
-        private final Map<String, List<String>> parameters = new HashMap<>();
+        private final Map<String, List<Object>> parameters = new HashMap<>();
         private final Map<String, Object> sessionVariables = new HashMap<>();
         private String userName;
         private final List<String> roles = new ArrayList<>();
@@ -114,7 +122,7 @@ public class BasicQueryContext implements QueryContext
                 parameters.get(name).add(value);
             else
             {
-                List<String> list = new ArrayList<String>();
+                List<Object> list = new ArrayList<>();
                 list.add(value);
                 parameters.put(name, list);
             }

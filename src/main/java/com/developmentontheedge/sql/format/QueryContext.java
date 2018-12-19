@@ -20,13 +20,15 @@ public interface QueryContext
 
     String getParameter(String name);
 
+    Map<String, List<Object>> getParameters();
+
+    Map<String, String> asMap();
+
     /**
      * @param name session variable name
      * @return session variable value or null if such variable does not exist
      */
     Object getSessionVariable(String name);
-
-    Map<String, String> asMap();
 
     String resolveQuery(String entity, String name);
 
