@@ -1,14 +1,14 @@
 package com.developmentontheedge.sql;
 
 import com.developmentontheedge.sql.format.ColumnRef;
+import com.developmentontheedge.sql.format.FilterApplier;
 import com.developmentontheedge.sql.format.dbms.Context;
 import com.developmentontheedge.sql.format.dbms.Dbms;
-import com.developmentontheedge.sql.format.FilterApplier;
 import com.developmentontheedge.sql.format.dbms.Formatter;
 import com.developmentontheedge.sql.model.AstStart;
-import com.developmentontheedge.sql.model.DefaultParserContext;
 import com.developmentontheedge.sql.model.SqlQuery;
 import one.util.streamex.EntryStream;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.text.ParseException;
@@ -48,6 +48,23 @@ public class FilterApplierTest
         new FilterApplier().setFilter(query, getMapOfList(conditions));
 
         assertEquals("SELECT * FROM games g, city WHERE city.country IN ('A', 'B')",
+                new Formatter().format(query, new Context(Dbms.POSTGRESQL)));
+    }
+
+    @Test
+    @Ignore//TODO add filter for query with WITH
+    public void testWithWITH()
+    {
+        AstStart query = SqlQuery.parse("WITH regional_sales AS (SELECT region FROM orders)" +
+                "SELECT * FROM regional_sales rs");
+        Map<ColumnRef, Object> conditions = EntryStream.<String, Object>of("rs.country", "UK")
+                .mapKeys(key -> ColumnRef.resolve(query, key))
+                .nonNullKeys()
+                .toCustomMap(LinkedHashMap::new);
+
+        new FilterApplier().setFilter(query, getMapOfList(conditions));
+
+        assertEquals("SELECT * FROM games g, city WHERE city.country ='UK'",
                 new Formatter().format(query, new Context(Dbms.POSTGRESQL)));
     }
 
