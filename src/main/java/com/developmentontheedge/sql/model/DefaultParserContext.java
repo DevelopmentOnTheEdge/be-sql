@@ -7,6 +7,14 @@ import one.util.streamex.StreamEx;
 import java.util.HashMap;
 import java.util.Locale;
 
+import static com.developmentontheedge.sql.format.dbms.Dbms.DB2;
+import static com.developmentontheedge.sql.format.dbms.Dbms.MYSQL;
+import static com.developmentontheedge.sql.format.dbms.Dbms.ORACLE;
+import static com.developmentontheedge.sql.format.dbms.Dbms.POSTGRESQL;
+import static com.developmentontheedge.sql.format.dbms.Dbms.SQLSERVER;
+import static com.developmentontheedge.sql.model.Function.AGGREGATE_FUNCTION_PRIORITY;
+import static com.developmentontheedge.sql.model.Function.FUNCTION_PRIORITY;
+
 /**
  *
  */
@@ -134,8 +142,8 @@ public class DefaultParserContext implements ParserContext
 
     public static final PredefinedFunction FUNC_CONCAT = new PredefinedFunction(OP_CONCAT, Function.LOGICAL_PRIORITY, 2);
 
-    public static final PredefinedFunction FUNC_UPPER = new PredefinedFunction(UPPER, Function.FUNCTION_PRIORITY, 1);
-    public static final PredefinedFunction FUNC_LOWER = new PredefinedFunction(LOWER, Function.FUNCTION_PRIORITY, 1);
+    public static final PredefinedFunction FUNC_UPPER = new PredefinedFunction(UPPER, FUNCTION_PRIORITY, 1);
+    public static final PredefinedFunction FUNC_LOWER = new PredefinedFunction(LOWER, FUNCTION_PRIORITY, 1);
 
     private static final DefaultParserContext instance = new DefaultParserContext();
 
@@ -158,7 +166,7 @@ public class DefaultParserContext implements ParserContext
         context.declareFunction(FUNC_NOT_LIKE);
         context.declareFunction(FUNC_IN);
         context.declareFunction(FUNC_NOT_IN);
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction(REGEXP_MATCH, Function.RELATIONAL_PRIORITY, 2), Dbms.POSTGRESQL, Dbms.MYSQL, Dbms.ORACLE));
+        context.declareFunction(new DbSpecificFunction(new PredefinedFunction(REGEXP_MATCH, Function.RELATIONAL_PRIORITY, 2), POSTGRESQL, MYSQL, ORACLE));
 
         // Arithmetic operators
         context.declareFunction(FUNC_PLUS);
@@ -171,108 +179,121 @@ public class DefaultParserContext implements ParserContext
         context.declareFunction(new PredefinedFunction(BIT_OR, Function.PLUS_PRIORITY, 2));
 
         // JSON
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction(GET_FIELD, Function.LOGICAL_PRIORITY, 2), Dbms.POSTGRESQL));
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction(GET_FIELD_TXT, Function.LOGICAL_PRIORITY, 2), Dbms.POSTGRESQL));
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction(EXTRACT_PATH, Function.LOGICAL_PRIORITY, 2), Dbms.POSTGRESQL));
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction(EXTRACT_PATH_TXT, Function.LOGICAL_PRIORITY, 2), Dbms.POSTGRESQL));
-    }
-
-    private static void declareFunction(ParserContext context, String name, String... otherNames)
-    {
-        context.declareFunction(new PredefinedFunction(name, Function.FUNCTION_PRIORITY, -1), otherNames);
-    }
-
-    private static void declareFunction(ParserContext context, int numParams, String name, String... otherNames)
-    {
-        context.declareFunction(new PredefinedFunction(name, Function.FUNCTION_PRIORITY, numParams), otherNames);
-    }
-
-    private static void declareFunction(ParserContext context, int minParams, int maxParams, String name, String... otherNames)
-    {
-        context.declareFunction(new PredefinedFunction(name, Function.FUNCTION_PRIORITY, minParams, maxParams), otherNames);
+        context.declareFunction(new DbSpecificFunction(new PredefinedFunction(GET_FIELD, Function.LOGICAL_PRIORITY, 2), POSTGRESQL));
+        context.declareFunction(new DbSpecificFunction(new PredefinedFunction(GET_FIELD_TXT, Function.LOGICAL_PRIORITY, 2), POSTGRESQL));
+        context.declareFunction(new DbSpecificFunction(new PredefinedFunction(EXTRACT_PATH, Function.LOGICAL_PRIORITY, 2), POSTGRESQL));
+        context.declareFunction(new DbSpecificFunction(new PredefinedFunction(EXTRACT_PATH_TXT, Function.LOGICAL_PRIORITY, 2), POSTGRESQL));
     }
 
     public static void declareSqlFunctions(ParserContext context)
     {
         context.declareFunction(FUNC_CONCAT);
 
-        declareFunction(context, "CONCAT");
-        declareFunction(context, "LEAST");
-        declareFunction(context, "GREATEST");
-        declareFunction(context, "COALESCE", "IFNULL");
-        declareFunction(context, "LENGTH", "LEN"); // TODO: check number of arguments
+        function(context, "CONCAT");
+        function(context, "LEAST");
+        function(context, "GREATEST");
+        function(context, "COALESCE", "IFNULL");
+        function(context, "LENGTH", "LEN"); // TODO: check number of arguments
 
-        context.declareFunction(new PredefinedFunction("SUM", Function.AGGREGATE_FUNCTION_PRIORITY, 1));
-        declareFunction(context, 1, "MAX");
-        declareFunction(context, 1, "MIN");
+        context.declareFunction(new PredefinedFunction("SUM", AGGREGATE_FUNCTION_PRIORITY, 1));
+        function(context, 1, "MAX");
+        function(context, 1, "MIN");
 
-        declareFunction(context, 2, 3, "SUBSTR", "SUBSTRING");
-        declareFunction(context, 2, "RIGHT");
-        declareFunction(context, 2, "LEFT");
+        function(context, 2, 3, "SUBSTR", "SUBSTRING");
+        function(context, 2, "RIGHT");
+        function(context, 2, "LEFT");
 
-        declareFunction(context, 1, UPPER);
-        declareFunction(context, 1, LOWER);
-        declareFunction(context, 1, "CHR", "CHAR");
+        function(context, 1, UPPER);
+        function(context, 1, LOWER);
+        function(context, 1, "CHR", "CHAR");
 
-        declareFunction(context, 1, 2, "TO_CHAR");
+        function(context, 1, 2, "TO_CHAR");
 
-        declareFunction(context, 1, "TO_NUMBER");
-        declareFunction(context, 1, "TO_KEY");
-        declareFunction(context, 3, "REPLACE");
+        function(context, 1, "TO_NUMBER");
+        function(context, 1, "TO_KEY");
+        function(context, 3, "REPLACE");
 
-        declareFunction(context, 1, 2, "ROUND");
-        declareFunction(context, 1, 2, "TRUNC", "TRUNCATE");
+        function(context, 1, 2, "ROUND");
+        function(context, 1, 2, "TRUNC", "TRUNCATE");
 
-        declareFunction(context, 3, "LPAD");
-        declareFunction(context, 1, "LTRIM");
-        declareFunction(context, 1, "RTRIM");
-        declareFunction(context, 1, "TRIM");
+        function(context, 3, "LPAD");
+        function(context, 1, "LTRIM");
+        function(context, 1, "RTRIM");
+        function(context, 1, "TRIM");
 
-        declareFunction(context, 2, 3, "IF");
-        declareFunction(context, 2, "NULLIF");
+        function(context, 2, 3, "IF");
+        function(context, 2, "NULLIF");
 
-        declareFunction(context, 0, "NOW");
-        declareFunction(context, 2, "DATE_FORMAT");
-        declareFunction(context, 2, "DATE_TRUNC");
+        function(context, 0, "NOW");
+        function(context, 2, "DATE_FORMAT");
+        function(context, 2, "DATE_TRUNC");
 
-        StreamEx.of(DateFormat.values()).forEach(df -> declareFunction(context, df.name()));
+        StreamEx.of(DateFormat.values()).forEach(df -> function(context, df.name()));
 
-        declareFunction(context, 1, 2, "TO_DATE");
+        function(context, 1, 2, "TO_DATE");
 
-        declareFunction(context, 2, "INSTR", "STRPOS");
-        declareFunction(context, 2, "ADD_MONTHS");
-        declareFunction(context, 2, "ADD_DAYS");
-        declareFunction(context, 2, "ADD_MILLIS");
-        declareFunction(context, 1, "LAST_DAY");
-        declareFunction(context, 1, "GROUPING");
+        function(context, 2, "INSTR", "STRPOS");
+        function(context, 2, "ADD_MONTHS");
+        function(context, 2, "ADD_DAYS");
+        function(context, 2, "ADD_MILLIS");
+        function(context, 1, "LAST_DAY");
+        function(context, 1, "GROUPING");
 
-        declareFunction(context, 2, "YEARDIFF");
-        declareFunction(context, 2, "SECONDDIFF");
-        declareFunction(context, 2, "MINUTEDIFF");
-        declareFunction(context, 2, "HOURDIFF");
-        declareFunction(context, 2, "DAYDIFF");
-        declareFunction(context, 2, "MONTHDIFF");
-        declareFunction(context, 2, "AGE");
-        declareFunction(context, 3, "TIMESTAMPDIFF");
-        declareFunction(context, 1, "FLOOR");
-        declareFunction(context, 2, "MOD");
-        declareFunction(context, 1, "ABS");
+        function(context, 2, "YEARDIFF");
+        function(context, 2, "SECONDDIFF");
+        function(context, 2, "MINUTEDIFF");
+        function(context, 2, "HOURDIFF");
+        function(context, 2, "DAYDIFF");
+        function(context, 2, "MONTHDIFF");
+        function(context, 2, "AGE");
+        function(context, 3, "TIMESTAMPDIFF");
+        function(context, 1, "FLOOR");
+        function(context, 2, "MOD");
+        function(context, 1, "ABS");
 
-        declareFunction(context, 0, "ROW_NUMBER");
-        declareFunction(context, 0, "RANK");
-        declareFunction(context, 1, "AVG");
-        declareFunction(context, 3, -1, "DECODE");
+        function(context, 0, "ROW_NUMBER");
+        function(context, 0, "RANK");
+        function(context, 1, "AVG");
+        function(context, 3, -1, "DECODE");
 
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction("PG_RELATION_SIZE", Function.FUNCTION_PRIORITY, 1), Dbms.POSTGRESQL));
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction("PG_SIZE_PRETTY", Function.FUNCTION_PRIORITY, 1), Dbms.POSTGRESQL));
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction("REGEXP_INSTR", Function.FUNCTION_PRIORITY, 2), Dbms.POSTGRESQL));
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction("REGEXP_REPLACE", Function.FUNCTION_PRIORITY, 2, 3), Dbms.DB2, Dbms.POSTGRESQL, Dbms.ORACLE));
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction("REGEXP_LIKE", Function.FUNCTION_PRIORITY, 2), Dbms.POSTGRESQL, Dbms.MYSQL, Dbms.ORACLE));
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction("DENSE_RANK", Function.FUNCTION_PRIORITY, 0), Dbms.DB2, Dbms.POSTGRESQL, Dbms.ORACLE, Dbms.SQLSERVER));
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction("STRING_AGG", Function.AGGREGATE_FUNCTION_PRIORITY, 1, 2), Dbms.DB2, Dbms.POSTGRESQL, Dbms.ORACLE, Dbms.MYSQL));
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction("TRANSLATE", Function.FUNCTION_PRIORITY, 3), Dbms.DB2, Dbms.POSTGRESQL, Dbms.ORACLE));
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction("LEVENSHTEIN", Function.FUNCTION_PRIORITY, 2), Dbms.POSTGRESQL, Dbms.ORACLE));
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction("REVERSE", Function.FUNCTION_PRIORITY, 1), Dbms.MYSQL));
-        context.declareFunction(new DbSpecificFunction(new PredefinedFunction("SUBSTRING_INDEX", Function.FUNCTION_PRIORITY, 3), Dbms.MYSQL));
+        dbSpecificFunction(context, "PG_RELATION_SIZE", FUNCTION_PRIORITY, 1, POSTGRESQL);
+        dbSpecificFunction(context, "PG_SIZE_PRETTY",   FUNCTION_PRIORITY, 1, POSTGRESQL);
+        dbSpecificFunction(context, "REGEXP_INSTR",     FUNCTION_PRIORITY, 2, POSTGRESQL);
+        dbSpecificFunction(context, "REGEXP_REPLACE",   FUNCTION_PRIORITY, 2, 3, DB2, POSTGRESQL, ORACLE);
+        dbSpecificFunction(context, "REGEXP_LIKE",      FUNCTION_PRIORITY, 2, POSTGRESQL, MYSQL, ORACLE);
+        dbSpecificFunction(context, "DENSE_RANK",       FUNCTION_PRIORITY, 0, DB2, POSTGRESQL, ORACLE, SQLSERVER);
+        dbSpecificFunction(context, "STRING_AGG",       AGGREGATE_FUNCTION_PRIORITY, 1, 2, DB2, POSTGRESQL, ORACLE, MYSQL);
+        dbSpecificFunction(context, "TRANSLATE",        FUNCTION_PRIORITY, 3, DB2, POSTGRESQL, ORACLE);
+        dbSpecificFunction(context, "LEVENSHTEIN",      FUNCTION_PRIORITY, 2, POSTGRESQL, ORACLE);
+        dbSpecificFunction(context, "REVERSE",          FUNCTION_PRIORITY, 1, MYSQL);
+        dbSpecificFunction(context, "SUBSTRING_INDEX",  FUNCTION_PRIORITY, 3, MYSQL);
     }
+
+    private static void function(ParserContext context, String name, String... otherNames)
+    {
+        context.declareFunction(new PredefinedFunction(name, FUNCTION_PRIORITY, -1), otherNames);
+    }
+
+    private static void function(ParserContext context, int numParams, String name, String... otherNames)
+    {
+        context.declareFunction(new PredefinedFunction(name, FUNCTION_PRIORITY, numParams), otherNames);
+    }
+
+    private static void function(ParserContext context, int minParams, int maxParams, String name, String... otherNames)
+    {
+        context.declareFunction(new PredefinedFunction(name, FUNCTION_PRIORITY, minParams, maxParams), otherNames);
+    }
+
+    private static void dbSpecificFunction(ParserContext context, String name, int priority, int numParams, Dbms... dbms)
+    {
+        PredefinedFunction predefinedFunction = new PredefinedFunction(name, priority, numParams);
+        context.declareFunction(new DbSpecificFunction(predefinedFunction, dbms));
+    }
+
+    private static void dbSpecificFunction(ParserContext context, String name, int priority, int minParams, int maxParams, Dbms... dbms)
+    {
+        PredefinedFunction predefinedFunction = new PredefinedFunction(name, priority, minParams, maxParams);
+        context.declareFunction(new DbSpecificFunction(predefinedFunction, dbms));
+    }
+
 }

@@ -35,6 +35,8 @@ import com.developmentontheedge.sql.model.SqlParserTreeConstants;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.developmentontheedge.sql.model.DefaultParserContext.FUNC_TIMES;
+
 public class DB2Transformer extends GenericDbmsTransformer
 {
     private static final PredefinedFunction RTRIM = new PredefinedFunction("RTRIM", PredefinedFunction.FUNCTION_PRIORITY, 1);
@@ -123,29 +125,29 @@ public class DB2Transformer extends GenericDbmsTransformer
 
     private SimpleNode getMonths(SimpleNode date)
     {
-        return DefaultParserContext.FUNC_PLUS.node(DefaultParserContext.FUNC_TIMES.node(AstNumericConstant.of(12), getYears(date)), MONTH.node(date));
+        return DefaultParserContext.FUNC_PLUS.node(FUNC_TIMES.node(AstNumericConstant.of(12), getYears(date)), MONTH.node(date));
     }
 
     private SimpleNode getHours(SimpleNode date)
     {
-        return DefaultParserContext.FUNC_PLUS.node(DefaultParserContext.FUNC_TIMES.node(AstNumericConstant.of(24), DAYS.node(date)), HOUR.node(date));
+        return DefaultParserContext.FUNC_PLUS.node(FUNC_TIMES.node(AstNumericConstant.of(24), DAYS.node(date)), HOUR.node(date));
     }
 
     private SimpleNode getMinutes(SimpleNode date)
     {
-        return DefaultParserContext.FUNC_PLUS.node(DefaultParserContext.FUNC_TIMES.node(AstNumericConstant.of(60), new AstParenthesis(getHours(date))), MINUTE.node(date));
+        return DefaultParserContext.FUNC_PLUS.node(FUNC_TIMES.node(AstNumericConstant.of(60), new AstParenthesis(getHours(date))), MINUTE.node(date));
     }
 
     private SimpleNode getSeconds(SimpleNode date)
     {
-        return DefaultParserContext.FUNC_PLUS.node(DefaultParserContext.FUNC_TIMES.node(AstNumericConstant.of(60), new AstParenthesis(getMinutes(date))), SECOND.node(date));
+        return DefaultParserContext.FUNC_PLUS.node(FUNC_TIMES.node(AstNumericConstant.of(60), new AstParenthesis(getMinutes(date))), SECOND.node(date));
     }
 
     @Override
     protected void transformDateAdd(AstFunNode node)
     {
         Function opPlus = DefaultParserContext.FUNC_PLUS;
-        Function opTimes = DefaultParserContext.FUNC_TIMES;
+        Function opTimes = FUNC_TIMES;
         SimpleNode date = node.child(0);
         SimpleNode number = node.child(1);
         String name = node.getFunction().getName();

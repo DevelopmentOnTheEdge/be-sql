@@ -590,7 +590,8 @@ public class ContextApplier
         {
             String parameter = node.getKey();
             String value = node.getValue();
-            return context.getListParameter(parameter) != null && (value != null ? context.getListParameter(parameter).contains(value) : context.getListParameter(parameter).size() > 0);
+            return context.getListParameter(parameter) != null && (value != null ?
+                    context.getListParameter(parameter).contains(value) : context.getListParameter(parameter).size() > 0);
         }
     }
 
