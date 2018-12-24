@@ -584,7 +584,7 @@ public class ContextApplier
         if (session != null)
         {
             String value = node.getValue();
-            return value != null ? context.getSessionVariable(session).equals(value) : context.getSessionVariable(session) != null;
+            return value != null ? value.equals(context.getSessionVariable(session)) : context.getSessionVariable(session) != null;
         }
         else
         {

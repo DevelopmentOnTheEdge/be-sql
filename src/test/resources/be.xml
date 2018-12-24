@@ -642,6 +642,21 @@ WHERE parent = '54000000000'
  ORDER BY name]]></format>
     </parser>
   </test>
+  <test name="if-session">
+    <parser>
+      <query><![CDATA[SELECT CODE, name FROM kladr
+<unless session="test" value="yes">
+ WHERE test = 'test'
+</unless>
+ ORDER BY name]]></query>
+      <applyContext>
+      </applyContext>
+      <format dbms="oracle"><![CDATA[SELECT CODE, name FROM kladr
+WHERE test = 'test'
+
+ ORDER BY name]]></format>
+    </parser>
+  </test>
   <test name="if-after-on">
     <parser>
       <query><![CDATA[SELECT a FROM t JOIN b ON b.ID=t.ID
