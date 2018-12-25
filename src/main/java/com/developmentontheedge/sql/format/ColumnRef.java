@@ -8,6 +8,9 @@ import com.developmentontheedge.sql.model.AstSelect;
 import com.developmentontheedge.sql.model.AstStart;
 import com.developmentontheedge.sql.model.AstTableRef;
 import com.developmentontheedge.sql.model.SimpleNode;
+import one.util.streamex.StreamEx;
+
+import java.util.List;
 
 public class ColumnRef
 {
@@ -38,8 +41,8 @@ public class ColumnRef
     */
     public static ColumnRef resolve(AstQuery query, String column)
     {
-        String[] parts = column.split("[.]");
-        if (parts.length > 3) throw new IllegalArgumentException("");
+        List<String> parts = StreamEx.split(column, "\\.").toList();
+        if (parts.size() > 3) throw new IllegalArgumentException("");
 
         for (AstSelect select : query.children().select(AstSelect.class))
         {
@@ -51,17 +54,8 @@ public class ColumnRef
             }
         }
 
-        String columnTableName, columnName;
-        if (parts.length == 2)
-        {
-            columnTableName = parts[0];
-            columnName = parts[1];
-        }
-        else
-        {
-            columnTableName = parts[0] + "." + parts[1];
-            columnName = parts[2];
-        }
+        final String columnTableName = joinWithoutTail(".", parts);
+        final String columnName = parts.get(parts.size() -1);
 
         for (AstSelect select : query.children().select(AstSelect.class))
         {
@@ -114,5 +108,10 @@ public class ColumnRef
                 "table='" + table + '\'' +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public static String joinWithoutTail(final String separator, final List<String> splitted)
+    {
+        return StreamEx.of(splitted).limit(splitted.size() - 1).joining(separator);
     }
 }
