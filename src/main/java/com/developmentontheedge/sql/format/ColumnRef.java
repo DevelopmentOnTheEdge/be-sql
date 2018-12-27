@@ -55,7 +55,7 @@ public class ColumnRef
         }
 
         final String columnTableName = joinWithoutTail(".", parts);
-        final String columnName = parts.get(parts.size() -1);
+        final String columnName = parts.get(parts.size() - 1);
 
         for (AstSelect select : query.children().select(AstSelect.class))
         {
