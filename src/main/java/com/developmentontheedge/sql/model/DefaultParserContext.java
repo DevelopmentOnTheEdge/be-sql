@@ -61,6 +61,11 @@ public class DefaultParserContext implements ParserContext
         return function;
     }
 
+    public HashMap<String, Function> getFunctionsMap()
+    {
+        return functionsMap;
+    }
+
     @Override
     public void declareFunction(Function function, String... otherNames)
     {
