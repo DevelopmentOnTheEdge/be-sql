@@ -5,6 +5,7 @@ public enum DateFormat
 {
     FORMAT_DATE("'YYYY-MM-DD'", "'%Y-%m-%d'"),
     FORMAT_DATETIME("'YYYY-MM-DD HH24:MI:SS'", "'%Y-%m-%d %H:%i:%S'"),
+    FORMAT_DATETIME_WITH_NO_SECONDS("'YYYY-MM-DD HH24:MI'", "'%Y-%m-%d %H:%i'"),
     FORMAT_DATE_RUS("'DD.MM.YYYY'", "'%d.%m.%Y'"),
     FORMAT_DATE_RUS_SHORT("'DD.MM.YY'", "'%d.%m.%y'"),
     FORMAT_MONTHYEAR("'month YYYY'", "'%M %Y'"),
