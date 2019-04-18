@@ -1800,7 +1800,15 @@ void FieldReference() #FieldReference :
   (
     BeCommonTag()
   | IdentifierConstant()
-  ) ]
+  )
+    [
+      < DOT >
+      (
+        BeCommonTag()
+      | IdentifierConstant()
+      )
+    ]
+  ]
 }
 
 void IdentifierConstant() #IdentifierConstant :

@@ -41,6 +41,13 @@
     </parser>
   </test>
 
+  <test name="column-with-table-and-schema">
+    <parser>
+      <query><![CDATA[SELECT schema1.table1.column1 FROM schema1.table1]]></query>
+      <format dbms="postgres"><![CDATA[SELECT schema1.table1.column1 FROM schema1.table1]]></format>
+    </parser>
+  </test>
+
   <test name="union-distinct">
     <parser>
       <query>
