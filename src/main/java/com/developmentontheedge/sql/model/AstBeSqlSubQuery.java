@@ -88,5 +88,10 @@ public class AstBeSqlSubQuery extends AstBeNode
     {
         return getParameter("using");
     }
+
+    public String getBeautifierName()
+    {
+        return getParameter("beautifierName");
+    }
 }
 /* JavaCC - OriginalChecksum=ec5b3915a160671116c3a7ccecc25aa9 (do not edit this line) */
