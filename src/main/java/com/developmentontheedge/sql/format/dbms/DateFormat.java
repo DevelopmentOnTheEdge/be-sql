@@ -8,6 +8,8 @@ public enum DateFormat
     FORMAT_DATETIME_WITH_NO_SECONDS("'YYYY-MM-DD HH24:MI'", "'%Y-%m-%d %H:%i'"),
     FORMAT_DATE_RUS("'DD.MM.YYYY'", "'%d.%m.%Y'"),
     FORMAT_DATE_RUS_SHORT("'DD.MM.YY'", "'%d.%m.%y'"),
+    FORMAT_DATETIME_RUS("'DD.MM.YYYY HH24:MI:SS'", "'%d.%m.%Y %H:%i:%S'"),
+    FORMAT_DATETIME_RUS_WITH_NO_SECONDS("'DD.MM.YYYY HH24:MI'", "'%d.%m.%Y %H:%i'"),
     FORMAT_MONTHYEAR("'month YYYY'", "'%M %Y'"),
     FORMAT_FMDAYMONTH("'FMDD.MM'", "'%e.%c'"),
     FORMAT_DAYMONTH("'DD.MM'", "'%d.%m'"),

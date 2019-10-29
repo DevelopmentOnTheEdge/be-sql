@@ -847,6 +847,40 @@ ORDER BY COALESCE( wg.shortName, wg.name       )]]></format>
     </parser>
   </test>
 
+  <test name="datetime-format-ru">
+    <parser>
+      <query>
+        <![CDATA[SELECT DATE_FORMAT(a, '%d.%m.%Y %H:%i:%S'), TO_CHAR(b,'DD.MM.YYYY HH24:MI:SS'), FORMAT_DATETIME_RUS(c) FROM table t]]></query>
+      <format dbms="oracle">
+        <![CDATA[SELECT TO_CHAR(a, 'DD.MM.YYYY HH24:MI:SS'), TO_CHAR(b, 'DD.MM.YYYY HH24:MI:SS'), TO_CHAR(c, 'DD.MM.YYYY HH24:MI:SS') FROM table t]]></format>
+      <format dbms="mysql">
+        <![CDATA[SELECT DATE_FORMAT(a, '%d.%m.%Y %H:%i:%S'), DATE_FORMAT(b, '%d.%m.%Y %H:%i:%S'), DATE_FORMAT(c, '%d.%m.%Y %H:%i:%S') FROM table t]]></format>
+      <format dbms="postgres">
+        <![CDATA[SELECT TO_CHAR(a, 'DD.MM.YYYY HH24:MI:SS'), TO_CHAR(b, 'DD.MM.YYYY HH24:MI:SS'), TO_CHAR(c, 'DD.MM.YYYY HH24:MI:SS') FROM table t]]></format>
+      <format dbms="db2">
+        <![CDATA[SELECT VARCHAR_FORMAT(a, 'DD.MM.YYYY HH24:MI:SS'), VARCHAR_FORMAT(b, 'DD.MM.YYYY HH24:MI:SS'), VARCHAR_FORMAT(c, 'DD.MM.YYYY HH24:MI:SS') FROM table t]]></format>
+      <format dbms="sqlserver">
+        <![CDATA[SELECT CONVERT(VARCHAR(19), a, 104), CONVERT(VARCHAR(19), b, 104), CONVERT(VARCHAR(19), c, 104) FROM table t]]></format>
+    </parser>
+  </test>
+
+  <test name="datetime-format-ru-no-seconds">
+    <parser>
+      <query>
+        <![CDATA[SELECT DATE_FORMAT(a, '%d.%m.%Y %H:%i'), TO_CHAR(b,'DD.MM.YYYY HH24:MI'), FORMAT_DATETIME_RUS_WITH_NO_SECONDS(c) FROM table t]]></query>
+      <format dbms="oracle">
+        <![CDATA[SELECT TO_CHAR(a, 'DD.MM.YYYY HH24:MI'), TO_CHAR(b, 'DD.MM.YYYY HH24:MI'), TO_CHAR(c, 'DD.MM.YYYY HH24:MI') FROM table t]]></format>
+      <format dbms="mysql">
+        <![CDATA[SELECT DATE_FORMAT(a, '%d.%m.%Y %H:%i'), DATE_FORMAT(b, '%d.%m.%Y %H:%i'), DATE_FORMAT(c, '%d.%m.%Y %H:%i') FROM table t]]></format>
+      <format dbms="postgres">
+        <![CDATA[SELECT TO_CHAR(a, 'DD.MM.YYYY HH24:MI'), TO_CHAR(b, 'DD.MM.YYYY HH24:MI'), TO_CHAR(c, 'DD.MM.YYYY HH24:MI') FROM table t]]></format>
+      <format dbms="db2">
+        <![CDATA[SELECT VARCHAR_FORMAT(a, 'DD.MM.YYYY HH24:MI'), VARCHAR_FORMAT(b, 'DD.MM.YYYY HH24:MI'), VARCHAR_FORMAT(c, 'DD.MM.YYYY HH24:MI') FROM table t]]></format>
+      <format dbms="sqlserver">
+        <![CDATA[SELECT CONVERT(VARCHAR(17), a, 104), CONVERT(VARCHAR(17), b, 104), CONVERT(VARCHAR(17), c, 104) FROM table t]]></format>
+    </parser>
+  </test>
+
   <test name="sum-select">
     <parser>
       <query>
