@@ -269,6 +269,10 @@ public class SqlServerTransformer extends GenericDbmsTransformer
                 length = 17;
                 codePage = 104;
                 break;
+            case FORMAT_DAYMONTHYEAR:
+                length = 11;
+                codePage = 106;
+                break;
             case FORMAT_MONTHYEAR:
                 length = 4;
                 codePage = 120;

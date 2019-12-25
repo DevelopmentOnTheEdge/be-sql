@@ -11,6 +11,7 @@ public enum DateFormat
     FORMAT_DATETIME_RUS("'DD.MM.YYYY HH24:MI:SS'", "'%d.%m.%Y %H:%i:%S'"),
     FORMAT_DATETIME_RUS_WITH_NO_SECONDS("'DD.MM.YYYY HH24:MI'", "'%d.%m.%Y %H:%i'"),
     FORMAT_MONTHYEAR("'month YYYY'", "'%M %Y'"),
+    FORMAT_DAYMONTHYEAR("'DD month YYYY'", "'%d %M %Y'"),
     FORMAT_FMDAYMONTH("'FMDD.MM'", "'%e.%c'"),
     FORMAT_DAYMONTH("'DD.MM'", "'%d.%m'"),
     FORMAT_HOURMINUTE("'HH24:MI'", "'%H:%i'"),

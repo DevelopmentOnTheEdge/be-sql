@@ -881,6 +881,23 @@ ORDER BY COALESCE( wg.shortName, wg.name       )]]></format>
     </parser>
   </test>
 
+  <test name="datetime-format-daymonthyear">
+    <parser>
+      <query>
+        <![CDATA[SELECT DATE_FORMAT(a, '%d %M %Y'), TO_CHAR(b,'DD month YYYY'), FORMAT_DAYMONTHYEAR(c) FROM table t]]></query>
+      <format dbms="oracle">
+        <![CDATA[SELECT TO_CHAR(a, 'DD month YYYY'), TO_CHAR(b, 'DD month YYYY'), TO_CHAR(c, 'DD month YYYY') FROM table t]]></format>
+      <format dbms="mysql">
+        <![CDATA[SELECT DATE_FORMAT(a, '%d %M %Y'), DATE_FORMAT(b, '%d %M %Y'), DATE_FORMAT(c, '%d %M %Y') FROM table t]]></format>
+      <format dbms="postgres">
+        <![CDATA[SELECT TO_CHAR(a, 'DD month YYYY'), TO_CHAR(b, 'DD month YYYY'), TO_CHAR(c, 'DD month YYYY') FROM table t]]></format>
+      <format dbms="db2">
+        <![CDATA[SELECT VARCHAR_FORMAT(a, 'DD month YYYY'), VARCHAR_FORMAT(b, 'DD month YYYY'), VARCHAR_FORMAT(c, 'DD month YYYY') FROM table t]]></format>
+      <format dbms="sqlserver">
+        <![CDATA[SELECT CONVERT(VARCHAR(11), a, 106), CONVERT(VARCHAR(11), b, 106), CONVERT(VARCHAR(11), c, 106) FROM table t]]></format>
+    </parser>
+  </test>
+
   <test name="sum-select">
     <parser>
       <query>
