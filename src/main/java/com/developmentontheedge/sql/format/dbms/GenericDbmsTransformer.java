@@ -65,7 +65,9 @@ public abstract class GenericDbmsTransformer implements DbmsTransformer
             transformChr(node);
         else if ("if".equals(name))
             transformIf(node);
-        else if ("date_format".equals(name) || ("to_char".equals(name) && node.jjtGetNumChildren() == 2))
+        else if ("date_format".equals(name))
+            transformDateToChar(node);
+        else if ("to_char".equals(name) && node.jjtGetNumChildren() == 2)
             transformToChar(node);
         else if ("to_char".equals(name) && node.jjtGetNumChildren() == 1 || "to_number".equals(name) || "to_key".equals(name))
             transformCastOracle(node);
@@ -159,7 +161,7 @@ public abstract class GenericDbmsTransformer implements DbmsTransformer
         node.replaceWith(replacement);
     }
 
-    private void transformToChar(AstFunNode node)
+    private void transformDateToChar(AstFunNode node)
     {
         SimpleNode child = node.child(1);
         if (child instanceof AstStringConstant)
@@ -169,6 +171,20 @@ public abstract class GenericDbmsTransformer implements DbmsTransformer
             if (df == null)
                 throw new IllegalArgumentException("Unknown date format: " + formatString);
             transformDateFormat(node, df);
+        }
+        else
+            throw new IllegalArgumentException("Date format is not a String");
+    }
+
+    private void transformToChar(AstFunNode node)
+    {
+        SimpleNode child = node.child(1);
+        if (child instanceof AstStringConstant)
+        {
+            String formatString = ((AstStringConstant) child).getValue();
+            DateFormat df = DateFormat.byFormatString(formatString);
+            if (df != null)
+                transformDateFormat(node, df);
         }
         else
             throw new IllegalArgumentException("Date format is not a String");

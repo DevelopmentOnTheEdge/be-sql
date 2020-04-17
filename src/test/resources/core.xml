@@ -766,6 +766,22 @@ ORDER BY COALESCE( wg.shortName, wg.name       )]]></format>
     </parser>
   </test>
 
+  <test name="date-format-unknown">
+    <parser>
+      <query>
+        <![CDATA[SELECT TO_CHAR(date, 'FMdd'), TO_CHAR(date, 'some pattern') FROM table t]]></query>
+      <format dbms="oracle">
+        <![CDATA[SELECT TO_CHAR(date, 'FMdd'), TO_CHAR(date, 'some pattern') FROM table t]]></format>
+      <format dbms="mysql">
+        <![CDATA[SELECT TO_CHAR(date, 'FMdd'), TO_CHAR(date, 'some pattern') FROM table t]]></format>
+      <format dbms="postgres">
+        <![CDATA[SELECT TO_CHAR(date, 'FMdd'), TO_CHAR(date, 'some pattern') FROM table t]]></format>
+      <format dbms="db2"><![CDATA[SELECT TO_CHAR(date, 'FMdd'), TO_CHAR(date, 'some pattern') FROM table t]]></format>
+      <format dbms="sqlserver">
+        <![CDATA[SELECT TO_CHAR(date, 'FMdd'), TO_CHAR(date, 'some pattern') FROM table t]]></format>
+    </parser>
+  </test>
+
   <test name="date-datetime-format1">
     <parser>
       <query>
