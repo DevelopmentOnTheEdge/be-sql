@@ -267,7 +267,7 @@ public class DefaultParserContext implements ParserContext
         dbSpecificFunction(context, "REGEXP_REPLACE",   FUNCTION_PRIORITY, 2, 4, DB2, POSTGRESQL, ORACLE);
         dbSpecificFunction(context, "REGEXP_LIKE",      FUNCTION_PRIORITY, 2, POSTGRESQL, MYSQL, ORACLE);
         dbSpecificFunction(context, "DENSE_RANK",       FUNCTION_PRIORITY, 0, DB2, POSTGRESQL, ORACLE, SQLSERVER);
-        dbSpecificFunction(context, "STRING_AGG",       AGGREGATE_FUNCTION_PRIORITY, 1, 2, DB2, POSTGRESQL, ORACLE, MYSQL);
+        dbSpecificFunction(context, "STRING_AGG",       FUNCTION_PRIORITY, 1, 2, DB2, POSTGRESQL, ORACLE, MYSQL);
         dbSpecificFunction(context, "TRANSLATE",        FUNCTION_PRIORITY, 3, DB2, POSTGRESQL, ORACLE);
         dbSpecificFunction(context, "LEVENSHTEIN",      FUNCTION_PRIORITY, 2, POSTGRESQL, ORACLE);
         dbSpecificFunction(context, "REVERSE",          FUNCTION_PRIORITY, 1, MYSQL);

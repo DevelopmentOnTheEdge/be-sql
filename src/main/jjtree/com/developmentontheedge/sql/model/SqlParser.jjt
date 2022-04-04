@@ -1610,11 +1610,11 @@ void Function() #FunNode :
     ArgumentList(jjtThis, jjtThis.getFunction())
     [OrderByClause() { agg = true; }] <RIGHT_PAREN>
     {
-        if(agg && getFunction().getPriority() != Function.AGGREGATE_FUNCTION_PRIORITY)
+/*        if(agg && getFunction().getPriority() != Function.AGGREGATE_FUNCTION_PRIORITY)
         {
             error(getFunction().getName() + " is not aggregate function");
         }
-    }
+*/    }
 }
 
 void ArgumentList(AstFunNode node, Function function) :

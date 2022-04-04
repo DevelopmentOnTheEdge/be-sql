@@ -2092,22 +2092,22 @@ ORDER BY ol.executedAt DESC
     </parser>
   </test>
 
-  <test name="string_agg">
+  <test name="string_agg (bad query)">
     <parser>
       <query>
-        <![CDATA[SELECT string_agg(x), string_agg(string, separator), string_agg(string, separator Order by string asc)]]></query>
+        <![CDATA[SELECT a, string_agg(x), string_agg(string, separator), string_agg(string, separator Order by string asc)]]></query>
       <format dbms="postgres">
-        <![CDATA[SELECT STRING_AGG(x), STRING_AGG(string, separator), STRING_AGG(string, separator ORDER BY string asc)]]></format>
+        <![CDATA[SELECT a, STRING_AGG(x), STRING_AGG(string, separator), STRING_AGG(string, separator ORDER BY string asc)]]></format>
       <format dbms="oracle">
-        <![CDATA[SELECT LISTAGG(x) WITHIN GROUP(ORDER BY x), LISTAGG(string, separator) WITHIN GROUP(ORDER BY string), LISTAGG(string, separator) WITHIN GROUP( ORDER BY string asc) FROM DUAL]]></format>
+        <![CDATA[SELECT a, LISTAGG(x) WITHIN GROUP(ORDER BY x), LISTAGG(string, separator) WITHIN GROUP(ORDER BY string), LISTAGG(string, separator) WITHIN GROUP( ORDER BY string asc) FROM DUAL]]></format>
       <format dbms="db2">
-        <![CDATA[SELECT LISTAGG(x), LISTAGG(string, separator), LISTAGG(string, separator) WITHIN GROUP( ORDER BY string asc) FROM SYSIBM.SYSDUMMY1]]></format>
+        <![CDATA[SELECT a, LISTAGG(x), LISTAGG(string, separator), LISTAGG(string, separator) WITHIN GROUP( ORDER BY string asc) FROM SYSIBM.SYSDUMMY1]]></format>
       <format dbms="mysql">
-        <![CDATA[SELECT GROUP_CONCAT(x), GROUP_CONCAT(string SEPARATOR separator), GROUP_CONCAT(string ORDER BY string asc SEPARATOR separator) FROM DUAL]]></format>
+        <![CDATA[SELECT a, GROUP_CONCAT(x), GROUP_CONCAT(string SEPARATOR separator), GROUP_CONCAT(string ORDER BY string asc SEPARATOR separator) FROM DUAL]]></format>
     </parser>
   </test>
 
-  <test name="string_agg-distinct">
+  <!--test name="string_agg-distinct">
     <parser>
       <query>
         <![CDATA[SELECT string_agg(distinct x), string_agg(distinct string, separator Order by string asc)]]></query>
@@ -2115,6 +2115,36 @@ ORDER BY ol.executedAt DESC
         <![CDATA[SELECT STRING_AGG(DISTINCT x), STRING_AGG(DISTINCT string, separator ORDER BY string asc)]]></format>
       <format dbms="mysql">
         <![CDATA[SELECT GROUP_CONCAT(DISTINCT x), GROUP_CONCAT(DISTINCT string ORDER BY string asc SEPARATOR separator) FROM DUAL]]></format>
+    </parser>
+  </test-->
+
+  <test name="aggregate (bad query)">
+    <parser>
+      <query>
+        <![CDATA[SELECT a, MAX(x), string_agg(x) FROM table]]></query>
+      <format dbms="postgres">
+        <![CDATA[SELECT a, MAX(x), STRING_AGG(x) FROM table]]></format>
+      <format dbms="oracle">
+        <![CDATA[SELECT a, MAX(x), LISTAGG(x) WITHIN GROUP(ORDER BY x) FROM table]]></format>
+      <format dbms="db2">
+        <![CDATA[SELECT a, MAX(x), LISTAGG(x) FROM table]]></format>
+      <format dbms="mysql">
+        <![CDATA[SELECT a, MAX(x), GROUP_CONCAT(x) FROM table]]></format>
+    </parser>
+  </test>
+
+  <test name="aggregate">
+    <parser>
+      <query>
+        <![CDATA[SELECT a, MAX(x), string_agg(x) FROM table GROUP BY a]]></query>
+      <format dbms="postgres">
+        <![CDATA[SELECT a, MAX(x), STRING_AGG(x) FROM table GROUP BY a]]></format>
+      <format dbms="oracle">
+        <![CDATA[SELECT a, MAX(x), LISTAGG(x) WITHIN GROUP(ORDER BY x) FROM table GROUP BY a]]></format>
+      <format dbms="db2">
+        <![CDATA[SELECT a, MAX(x), LISTAGG(x) FROM table GROUP BY a]]></format>
+      <format dbms="mysql">
+        <![CDATA[SELECT a, MAX(x), GROUP_CONCAT(x) FROM table GROUP BY a]]></format>
     </parser>
   </test>
 
