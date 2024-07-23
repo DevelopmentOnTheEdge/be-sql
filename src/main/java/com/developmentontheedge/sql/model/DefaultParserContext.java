@@ -272,6 +272,8 @@ public class DefaultParserContext implements ParserContext
         dbSpecificFunction(context, "LEVENSHTEIN",      FUNCTION_PRIORITY, 2, POSTGRESQL, ORACLE);
         dbSpecificFunction(context, "REVERSE",          FUNCTION_PRIORITY, 1, MYSQL);
         dbSpecificFunction(context, "SUBSTRING_INDEX",  FUNCTION_PRIORITY, 3, MYSQL);
+        dbSpecificFunction(context, "JSON_UNQUOTE",     FUNCTION_PRIORITY, 1, MYSQL);
+        dbSpecificFunction(context, "JSON_EXTRACT",     FUNCTION_PRIORITY, 2, MYSQL);
     }
 
     private static void function(ParserContext context, String name, String... otherNames)
