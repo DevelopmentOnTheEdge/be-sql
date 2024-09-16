@@ -13,3 +13,19 @@ BE-SQL — диалект SQL, который поддерживается BeanE
 ### Wiki
 http://wiki.dote.ru/index.php/BE-SQL
 
+
+## Maven
+
+```xml
+<dependency>
+    <groupId>com.developmentontheedge</groupId>
+    <artifactId>be-sql</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
+
+## Gradle
+
+```groovy
+implementation group: 'com.developmentontheedge', name: 'be-sql', version: '0.1.0'
+```
