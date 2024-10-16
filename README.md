@@ -1,6 +1,6 @@
 # BE-SQL
 
-[![Build Status](https://travis-ci.com/DevelopmentOnTheEdge/be-sql.svg?branch=master)](https://travis-ci.com/DevelopmentOnTheEdge/be-sql) [![Coverage Status](https://coveralls.io/repos/github/DevelopmentOnTheEdge/be-sql/badge.svg?branch=master)](https://coveralls.io/github/DevelopmentOnTheEdge/be-sql?branch=master)
+[![Tests using Java 8](https://github.com/DevelopmentOnTheEdge/be-sql/actions/workflows/run_tests_on_push_java_8.yaml/badge.svg)](https://github.com/DevelopmentOnTheEdge/be-sql/actions/workflows/run_tests_on_push_java_8.yaml) [![Coverage Status](https://coveralls.io/repos/github/DevelopmentOnTheEdge/be-sql/badge.svg?branch=master)](https://coveralls.io/github/DevelopmentOnTheEdge/be-sql?branch=master)
 
 Parse SQL and builds its AST.
 Then DBMS specific SQL select statement can be generated.
