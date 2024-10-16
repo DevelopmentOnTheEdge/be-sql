@@ -26,9 +26,9 @@ jobs:
 
     - name: Pre-install xmltest
       run: |
-        git clone https://github.com/DevelopmentOnTheEdge/xmltest.git
-        && cd xmltest
-        && mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+        git clone https://github.com/DevelopmentOnTheEdge/xmltest.git \
+        && cd xmltest \
+        && mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V \
         && cd ../
 
     - name: Run tests
