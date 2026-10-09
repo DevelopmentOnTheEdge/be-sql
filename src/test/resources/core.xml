@@ -1675,6 +1675,34 @@ GROUP BY x."___sel"]]></format>
     </parser>
   </test>
 
+  <test name="pgvector-cosine-distance">
+    <parser>
+      <query><![CDATA[SELECT id, content, embedding <=> '[0.1,0.2]'::vector AS distance FROM chunks ORDER BY embedding <=> '[0.1,0.2]'::vector LIMIT 5]]></query>
+      <format dbms="postgres"><![CDATA[SELECT id, content, embedding <=> CAST('[0.1,0.2]' AS vector) AS distance FROM chunks ORDER BY embedding <=> CAST('[0.1,0.2]' AS vector) LIMIT 5]]></format>
+    </parser>
+  </test>
+
+  <test name="pgvector-operators">
+    <parser>
+      <query><![CDATA[SELECT a <-> b, a <#> b, a <=> b, a <+> b, c <~> d, c <%> d FROM t WHERE 1 - (a <=> '[1,2,3]'::vector(3)) > 0.5]]></query>
+      <format dbms="postgres"><![CDATA[SELECT a <-> b, a <#> b, a <=> b, a <+> b, c <~> d, c <%> d FROM t WHERE 1 - (a <=> CAST('[1,2,3]' AS vector(3))) > 0.5]]></format>
+    </parser>
+  </test>
+
+  <test name="pgvector-cast">
+    <parser>
+      <query><![CDATA[SELECT CAST(x AS vector(768)), CAST(y AS halfvec(768)) FROM t ORDER BY x <-> CAST('[1,2]' AS vector) LIMIT 1]]></query>
+      <format dbms="postgres"><![CDATA[SELECT CAST(x AS vector(768)), CAST(y AS halfvec(768)) FROM t ORDER BY x <-> CAST('[1,2]' AS vector) LIMIT 1]]></format>
+    </parser>
+  </test>
+
+  <test name="postfix-cast">
+    <parser>
+      <query><![CDATA[SELECT x::text, (a + b)::int, '1 MONTH'::INTERVAL FROM t]]></query>
+      <format dbms="postgres"><![CDATA[SELECT CAST(x AS text), CAST((a + b) AS int), INTERVAL '1 MONTH' FROM t]]></format>
+    </parser>
+  </test>
+
   <test name="pg_func">
     <parser>
       <query><![CDATA[SELECT nspname || '.' || relname AS "Relation",

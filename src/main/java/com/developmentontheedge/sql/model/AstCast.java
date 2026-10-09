@@ -2,8 +2,19 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=false,VISITOR=false,TRACK_TOKENS=true,NODE_PREFIX=Ast,NODE_EXTENDS=,NODE_FACTORY=,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 package com.developmentontheedge.sql.model;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class AstCast extends SimpleNode
 {
+    /**
+     * Types which accept a size: CHAR(n), VARCHAR(n), DECIMAL(n[, scale])
+     * and pgvector types VECTOR(dimensions), HALFVEC(dimensions), SPARSEVEC(dimensions), BIT(n).
+     */
+    private static final List<String> SIZED_TYPES = Collections.unmodifiableList(Arrays.asList(
+            "CHAR", "VARCHAR", "DECIMAL", "VECTOR", "HALFVEC", "SPARSEVEC", "BIT"));
+
     private String dataType;
     private int size = -1;
     private int scale = -1;
@@ -28,6 +39,19 @@ public class AstCast extends SimpleNode
         setDataType(dataType);
         setSize(size);
         addChild(child);
+    }
+
+    @Override
+    public void jjtClose()
+    {
+        // Postfix cast (expr::type) node is opened at the "::" token, while it actually starts with the cast expression
+        if (firstToken != null && firstToken.kind == SqlParserConstants.DOUBLE_COLON && jjtGetNumChildren() == 1)
+        {
+            SimpleNode child = child(0);
+            firstToken = child.jjtGetFirstToken();
+            specialPrefix = child.getSpecialPrefix();
+            child.specialPrefix = null;
+        }
     }
 
     public void setDataType(String dataType)
@@ -62,8 +86,9 @@ public class AstCast extends SimpleNode
     {
         if (size < 0)
             size = -1;
-        if (!"CHAR".equals(dataType) && !"VARCHAR".equals(dataType) && !"DECIMAL".equals(dataType) && size != -1)
-            throw new IllegalArgumentException("Can specify cast size for CHAR, VARCHAR and DECIMAL types only");
+        if (size != -1 && !SIZED_TYPES.contains(String.valueOf(dataType).toUpperCase()))
+            throw new IllegalArgumentException("Can specify cast size for " + String.join(", ", SIZED_TYPES)
+                    + " types only");
         this.size = size;
     }
 
@@ -74,7 +99,7 @@ public class AstCast extends SimpleNode
 
     public void setScale(int scale)
     {
-        if (!"DECIMAL".equals(dataType))
+        if (!"DECIMAL".equalsIgnoreCase(dataType))
             throw new IllegalArgumentException("Can specify cast scale for DECIMAL type only");
         this.scale = scale;
     }
