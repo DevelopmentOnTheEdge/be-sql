@@ -122,6 +122,14 @@ public class DefaultParserContext implements ParserContext
     public static final String EXTRACT_PATH = "#>";
     public static final String EXTRACT_PATH_TXT = "#>>";
 
+    // pgvector distance operators
+    public static final String VECTOR_L2_DISTANCE = "<->";
+    public static final String VECTOR_INNER_PRODUCT = "<#>";
+    public static final String VECTOR_COSINE_DISTANCE = "<=>";
+    public static final String VECTOR_L1_DISTANCE = "<+>";
+    public static final String VECTOR_HAMMING_DISTANCE = "<~>";
+    public static final String VECTOR_JACCARD_DISTANCE = "<%>";
+
     public static final PredefinedFunction FUNC_OR = new PredefinedFunction(OR_LIT, Function.LOGICAL_PRIORITY, -1);
     public static final PredefinedFunction FUNC_AND = new PredefinedFunction(AND_LIT, Function.LOGICAL_PRIORITY, -1);
     public static final PredefinedFunction FUNC_NOT = new PredefinedFunction(NOT_LIT, Function.UNARY_PRIORITY, 1);
@@ -188,6 +196,12 @@ public class DefaultParserContext implements ParserContext
         context.declareFunction(new DbSpecificFunction(new PredefinedFunction(GET_FIELD_TXT, Function.LOGICAL_PRIORITY, 2), POSTGRESQL));
         context.declareFunction(new DbSpecificFunction(new PredefinedFunction(EXTRACT_PATH, Function.LOGICAL_PRIORITY, 2), POSTGRESQL));
         context.declareFunction(new DbSpecificFunction(new PredefinedFunction(EXTRACT_PATH_TXT, Function.LOGICAL_PRIORITY, 2), POSTGRESQL));
+
+        for (String op : new String[]{VECTOR_L2_DISTANCE, VECTOR_INNER_PRODUCT, VECTOR_COSINE_DISTANCE,
+                VECTOR_L1_DISTANCE, VECTOR_HAMMING_DISTANCE, VECTOR_JACCARD_DISTANCE})
+        {
+            context.declareFunction(new DbSpecificFunction(new PredefinedFunction(op, Function.RELATIONAL_PRIORITY, 2), POSTGRESQL));
+        }
     }
 
     public static void declareSqlFunctions(ParserContext context)

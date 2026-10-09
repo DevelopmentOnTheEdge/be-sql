@@ -217,6 +217,16 @@ TOKEN_MGR_DECLS : {
 |   < EXTRACT_PATH_TXT: "#>>" >
 }
 
+<WithinBeSubQuery, DEFAULT> TOKEN: /* pgvector distance operators */
+{
+    < VECTOR_L2_DISTANCE:       "<->" >
+|   < VECTOR_INNER_PRODUCT:     "<#>" >
+|   < VECTOR_COSINE_DISTANCE:   "<=>" >
+|   < VECTOR_L1_DISTANCE:       "<+>" >
+|   < VECTOR_HAMMING_DISTANCE:  "<~>" >
+|   < VECTOR_JACCARD_DISTANCE:  "<%>" >
+}
+
 <WithinBeSubQuery, DEFAULT> TOKEN : /* LITERALS */
 {
     < INTEGER_LITERAL:
@@ -1489,7 +1499,9 @@ void JsonExpression() : { Token op; }
 {
   BitOrExpression()
   (
-    ( (op=<GET_FIELD> | op=<GET_FIELD_TXT> | op=<EXTRACT_PATH> |op=<EXTRACT_PATH_TXT>) BitOrExpression()
+    ( (op=<GET_FIELD> | op=<GET_FIELD_TXT> | op=<EXTRACT_PATH> |op=<EXTRACT_PATH_TXT>
+       | op=<VECTOR_L2_DISTANCE> | op=<VECTOR_INNER_PRODUCT> | op=<VECTOR_COSINE_DISTANCE>
+       | op=<VECTOR_L1_DISTANCE> | op=<VECTOR_HAMMING_DISTANCE> | op=<VECTOR_JACCARD_DISTANCE>) BitOrExpression()
       {
           setOperator(jjtThis, op);
       }
@@ -1569,7 +1581,24 @@ void UnaryExpression() : { Token op; }
     }
   ) #FunNode(1)
 |
+  PostfixCastExpression()
+}
+
+// PostgreSQL-style cast: expr::type or expr::type(size), e.g. ?::vector, '[1,2,3]'::vector(3)
+void PostfixCastExpression() : { Token type, num; }
+{
   PrimaryExpression()
+  (
+    LOOKAHEAD(2)
+    ( <DOUBLE_COLON> type=<IDENTIFIER>
+      {
+        jjtThis.setDataType(type.image);
+      }
+      [
+        LOOKAHEAD(2) <LEFT_PAREN> num=<INTEGER_LITERAL> { jjtThis.setSize(Integer.valueOf(num.image)); } <RIGHT_PAREN>
+      ]
+    ) #Cast(1)
+  )*
 }
 
 void PrimaryExpression() :
@@ -1578,7 +1607,7 @@ void PrimaryExpression() :
         LOOKAHEAD(<LEFT_PAREN> [BeIfStart()] <SELECT>) NestedQuery()
     |   LOOKAHEAD(2) Function() [(WindowSpecification()) #WindowFunction(2)]
     |   Interval()
-    |   LOOKAHEAD(StringConstant() <DOUBLE_COLON>) IntervalSuffix()
+    |   LOOKAHEAD(StringConstant() <DOUBLE_COLON> <INTERVAL>) IntervalSuffix()
     |   ParenthesizedExpression()
     |   LOOKAHEAD(2) Count() [(WindowSpecification()) #WindowFunction(2)]
     |   CaseSpecification()
