@@ -10,6 +10,11 @@ BE-SQL — диалект SQL, который поддерживается BeanE
 Больше всего он похож на PostgreSQL, но некоторые конструкции из других диалектов тоже поддерживаются. 
 Он также должен понимать различные BE-специфичные теги вроде &lt;if&gt;, &lt;unless&gt; и т. д. 
 
+Deploy to Maven Central with command
+```sh
+mvn -DskipTests deploy -Pcentral-publish
+```
+
 ### Wiki
 http://wiki.dote.ru/index.php/BE-SQL
 
@@ -20,12 +25,12 @@ http://wiki.dote.ru/index.php/BE-SQL
 <dependency>
     <groupId>com.developmentontheedge</groupId>
     <artifactId>be-sql</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 </dependency>
 ```
 
 ## Gradle
 
 ```groovy
-implementation group: 'com.developmentontheedge', name: 'be-sql', version: '0.1.0'
+implementation group: 'com.developmentontheedge', name: 'be-sql', version: '0.1.1'
 ```
